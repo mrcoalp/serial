@@ -62,7 +62,7 @@ endif()
 #target_link_libraries(serial_example ${PROJECT_NAME})
 
 ## Include headers
-include_directories(include)
+target_include_directories(serial PUBLIC include)
 
 ## Install executable
 install(TARGETS ${PROJECT_NAME}
