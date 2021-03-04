@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.10)
+
 project(serial)
 
 if (APPLE)
@@ -7,10 +8,7 @@ if (APPLE)
 endif ()
 
 ## Sources
-set(serial_SRCS
-        src/serial.cc
-        include/serial/serial.h
-        include/serial/v8stdint.h)
+set(serial_SRCS src/serial.cc)
 
 if (APPLE)
     # If OSX
@@ -43,14 +41,22 @@ endif ()
 #target_link_libraries(serial_example ${PROJECT_NAME})
 
 ## Include headers
-target_include_directories(serial PUBLIC include)
+target_include_directories(serial PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
 ## Install executable
-#install(TARGETS ${PROJECT_NAME}
-#    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#    RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
-#)
+install(TARGETS ${PROJECT_NAME}
+        EXPORT ${PROJECT_NAME}-targets
+        PUBLIC_HEADER DESTINATION include
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
+
+install(EXPORT ${PROJECT_NAME}-targets
+        NAMESPACE ${PROJECT_NAME}::
+        FILE ${PROJECT_NAME}-config.cmake
+        DESTINATION lib/cmake/${PROJECT_NAME})
 
 ## Install headers
 #install(FILES include/serial/serial.h include/serial/v8stdint.h
